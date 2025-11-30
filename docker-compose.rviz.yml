@@ -1,0 +1,29 @@
+# ###########################################################################
+# Docker Compose for RViz2 Test Service
+#
+# Standalone RViz2 service for testing visualization with ROS2 Humble.
+#
+# @author      James R. Heselden (github: iranaphor)
+# @maintainer  James R. Heselden (github: iranaphor)
+# @datecreated 30th November 2025
+# @credits     Code structure and implementation were developed by the
+#              author with assistance from Anthropic's Claude Sonnet 4.5
+#              model via GitHub Copilot, used under the author's direction
+#              and supervision.
+#
+###########################################################################
+
+services:
+  rviz:
+    image: osrf/ros:humble-desktop-full
+    network_mode: "host"
+    environment:
+      DISPLAY: "localhost:100"
+      XAUTHORITY: "/dev/null"
+      QT_X11_NO_MITSHM: "1"
+      LIBGL_ALWAYS_SOFTWARE: "1"
+      OGRE_RTT_MODE: "Copy"
+    command: ["bash", "-c", "sleep 5 && rviz2; docker kill vnctest-xpra-1 || true"]
+
+volumes:
+  x11_socket:

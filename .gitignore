@@ -1,0 +1,6 @@
+docker-compose.prod.yml
+docker-compose.prod_xpra.yml
+
+
+*~
+*.swp
