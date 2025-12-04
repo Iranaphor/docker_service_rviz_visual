@@ -54,7 +54,7 @@ jobs:
                   uk.ac.lincoln.lcas.version=${{ github.ref_name }}
                   uk.ac.lincoln.lcas.actor=${{ github.actor }}
                 images: |
-                  uk.ac.lincoln.lcas/${{ steps.docker-image-name.outputs.image_name }}
+                  lcas.lincoln.ac.uk/${{ steps.docker-image-name.outputs.image_name }}
                 tags: |
                   type=semver,pattern={{version}}
                   type=semver,pattern={{major}}.{{minor}}
