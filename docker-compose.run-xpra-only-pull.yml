@@ -1,0 +1,42 @@
+# ###########################################################################
+# Docker Compose XPRA Display Service with RViz2
+#
+# Standalone service for browser-based RViz2 visualization using XPRA HTML5.
+# Provides cross-platform access to RViz without X11 or VNC client installation.
+#
+# @author      James R. Heselden (github: iranaphor)
+# @maintainer  James R. Heselden (github: iranaphor)
+# @datecreated 30th November 2025
+# @credits     Code structure and implementation were developed by the
+#              author with assistance from Anthropic's Claude Sonnet 4.5
+#              model via GitHub Copilot, used under the author's direction
+#              and supervision.
+#
+###########################################################################
+
+services:
+  rviz2xpra:
+    image: uk.ac.lincoln.lcas/lcas/rviz2xpra_docker:latest
+    pull_policy: always
+    ports:
+      - "14500:14500"
+    network_mode: host  # Change to match your prod service network mode
+    volumes:
+      - rviz_config:/root/.rviz:ro # We overrite our .rviz with a mounted volume from the other service
+    environment:
+      - ROS_DOMAIN_ID=1  # Change to match your ROS_DOMAIN_ID
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+      exec xpra start :100
+      --bind-tcp=0.0.0.0:14500
+      --html=on
+      --start-child='rviz2'
+      --exit-with-children
+      --daemon=no
+      --pulseaudio=no
+      --notifications=no
+      --bell=no
+      --mdns=no"
+
+volumes:
+  rviz_config:
