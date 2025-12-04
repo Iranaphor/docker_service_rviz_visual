@@ -77,7 +77,6 @@ jobs:
                 push: ${{ github.event_name != 'pull_request' }}
                 tags: ${{ steps.meta.outputs.tags }}
                 labels: ${{ steps.meta.outputs.labels }}
-                target: final
                 build-args: |
                   BASE_IMAGE=osrf/ros:humble-desktop-full
                   GIT_REPO_VERSION=${{ github.ref_name }}
