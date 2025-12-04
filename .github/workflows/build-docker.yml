@@ -69,7 +69,7 @@ jobs:
             - name: Build and Push
               uses: docker/build-push-action@v6
               with:
-                context: .
+                context: ./rviz2xpra
                 file: ./rviz2xpra/Dockerfile
                 platforms: linux/amd64
                 cache-from: type=gha
