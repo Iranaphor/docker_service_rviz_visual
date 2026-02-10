@@ -23,15 +23,16 @@ services:
     network_mode: bridge  # Change to match your prod service network mode
     ipc: "host"
     volumes:
-      - rviz_config:/root/.rviz:ro # We overrite our .rviz with a mounted volume from the other service
+      - x11:/tmp/.X11-unix:rw
     environment:
-      - ROS_DOMAIN_ID=1  # Change to match your ROS_DOMAIN_ID
+      - DISPLAY=:100
+      - QT_X11_NO_MITSHM=1
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
       exec xpra start :100
       --bind-tcp=0.0.0.0:14500
       --html=on
-      --start-child='rviz2 -d /root/.rviz/default.rviz'
+      --start-child='rviz2'
       --exit-with-children
       --daemon=no
       --pulseaudio=no
@@ -39,14 +40,26 @@ services:
       --bell=no
       --mdns=no"
 
+
+  rviz2_window_headless:
+    extends:
+      file: samples/docker-compose.sample-rviz2-headless.yml
+      service: rviz2_window_headless
+    volumes:
+      - x11:/tmp/.X11-unix:rw
+    environment:
+      - ROS_DOMAIN_ID=1
+      - DISPLAY=:100
+      - QT_X11_NO_MITSHM=1
+
+
   marker_publisher:
     extends:
-      file: docker-compose.sample-cube.yml
+      file: samples/docker-compose.sample-cube.yml
       service: marker_publisher
-    volumes:
-      - rviz_config:/home/ros/.rviz
     environment:
       - ROS_DOMAIN_ID=1
 
+
 volumes:
-  rviz_config:
+  x11:

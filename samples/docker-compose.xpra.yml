@@ -17,14 +17,16 @@
 services:
   rviz2xpra:
     build: ./rviz2xpra
+
     ports:
       - "14500:14500"
     network_mode: bridge  # Change to match your prod service network mode
     ipc: "host"
     volumes:
-      - rviz_config:/root/.rviz:ro # We overrite our .rviz with a mounted volume from the other service
+      - x11:/tmp/.X11-unix:rw
     environment:
-      - ROS_DOMAIN_ID=1  # Change to match your ROS_DOMAIN_ID
+      - DISPLAY=:100
+      - QT_X11_NO_MITSHM=1
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
       exec xpra start :100
@@ -39,4 +41,4 @@ services:
       --mdns=no"
 
 volumes:
-  rviz_config:
+  x11:

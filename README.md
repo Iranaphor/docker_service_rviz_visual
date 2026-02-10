@@ -44,6 +44,15 @@ docker compose -f docker-compose.prod.yml -f docker-compose.prod_xpra.yml up
 
 Access: **http://localhost:14500/**
 
+## Compose files:
+
+#docker-compose.run.yml
+#
+#    docker-compose.run-xpra-only.yml
+#    launch docker-compose.sample-cube.yml
+#    docker-compose.sample-rviz2.yml
+
+
 ## Notes
 
 - Config persists in `rviz_config` volume

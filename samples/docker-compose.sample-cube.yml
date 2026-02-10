@@ -1,0 +1,37 @@
+# ###########################################################################
+# Docker Compose for RViz2 Test Service
+#
+# Standalone RViz2 service for testing visualization with ROS2 Humble.
+#
+# @author      James R. Heselden (github: iranaphor)
+# @maintainer  James R. Heselden (github: iranaphor)
+# @datecreated 30th November 2025
+# @credits     Code structure and implementation were developed by the
+#              author with assistance from Anthropic's Claude Sonnet 4.5
+#              model via GitHub Copilot, used under the author's direction
+#              and supervision.
+#
+###########################################################################
+
+services:
+  marker_publisher:
+    image: osrf/ros:humble-desktop-full
+    container_name: ros2-random-marker
+    network_mode: bridge
+    ipc: "host"
+    environment:
+      - ROS_DOMAIN_ID=1
+    command:
+      - bash
+      - -lc
+      - |
+          set -eu
+          echo "publisher: beginning loop"
+          while true; do
+            r="$(python3 -c 'import random; print(random.random())')"
+            g="$(python3 -c 'import random; print(random.random())')"
+            b="$(python3 -c 'import random; print(random.random())')"
+            ros2 topic pub -1 /visualization_marker visualization_msgs/msg/Marker "{header: {frame_id: map}, ns: random, id: 1, type: 1, pose: {position: {z: 0.5}}, scale: {x: 0.5, y: 0.5, z: 0.5}, color: {r: $$r, g: $$g, b: $$b, a: 1.0}}"
+
+            sleep 0.5
+          done

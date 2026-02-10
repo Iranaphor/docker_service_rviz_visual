@@ -25,6 +25,8 @@ services:
       - rviz_config:/root/.rviz:ro # We overrite our .rviz with a mounted volume from the other service
     environment:
       - ROS_DOMAIN_ID=1  # Change to match your ROS_DOMAIN_ID
+      - DISPLAY=:100
+      - QT_X11_NO_MITSHM=1
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
       exec xpra start :100
@@ -49,3 +51,4 @@ services:
 
 volumes:
   rviz_config:
+  x11:
