@@ -19,11 +19,15 @@ services:
     build: ./rviz2xpra
     ports:
       - "14500:14500"
-    network_mode: host  # Change to match your prod service network mode
+    network_mode: bridge  # Change to match your prod service network mode
+    ipc: "host"
     volumes:
-      - rviz_config:/root/.rviz:ro # We overrite our .rviz with a mounted volume from the other service
+#      - rviz_config:/root/.rviz:ro # We overrite our .rviz with a mounted volume from the other service
+      - x11:/tmp/.X11-unix:rw
     environment:
       - ROS_DOMAIN_ID=1  # Change to match your ROS_DOMAIN_ID
+      - DISPLAY=:100
+      - QT_X11_NO_MITSHM=1
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
       exec xpra start :100
@@ -37,9 +41,17 @@ services:
       --bell=no
       --mdns=no"
 
+
   marker_publisher:
     extends:
       file: docker-compose.sample-cube.yml
       service: marker_publisher
+    volumes:
+      - x11:/tmp/.X11-unix:rw
     environment:
       - ROS_DOMAIN_ID=1
+      - DISPLAY=:100
+      - QT_X11_NO_MITSHM=1
+
+volumes:
+  x11:
