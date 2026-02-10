@@ -33,14 +33,19 @@ services:
       exec xpra start :100
       --bind-tcp=0.0.0.0:14500
       --html=on
-      --start-child='xterm'
+      --start-child='rqt'
       --exit-with-children
       --daemon=no
       --pulseaudio=no
       --notifications=no
       --bell=no
       --mdns=no"
-
+    healthcheck:
+      test: ["CMD-SHELL", "test -S /tmp/.X11-unix/X100 && pgrep -x xpra > /dev/null"]
+      interval: 2s
+      timeout: 1s
+      retries: 15
+      start_period: 8s
 
   rviz2_window_headless:
     extends:
@@ -55,8 +60,8 @@ services:
       - QT_X11_NO_MITSHM=1
     depends_on:
       rviz2xpra:
-        condition: service_started
-    command: 'bash -c "sleep 3 && rviz2"'
+        condition: service_healthy
+    command: 'bash -c "sleep 5 && rviz2"'
 
 
   marker_publisher:
