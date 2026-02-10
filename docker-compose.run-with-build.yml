@@ -20,19 +20,20 @@ services:
     build: ./rviz2xpra
     ports:
       - "14500:14500"
-    network_mode: bridge  # Change to match your prod service network mode
+    network_mode: bridge
+    container_name: rviz2xpra
     ipc: "host"
     volumes:
       - x11:/tmp/.X11-unix:rw
     environment:
-      - DISPLAY=:100
+      #- DISPLAY=:1
       - QT_X11_NO_MITSHM=1
     command: >
       bash -c "source /opt/ros/humble/setup.bash &&
       exec xpra start :100
       --bind-tcp=0.0.0.0:14500
       --html=on
-      --start-child='rviz2'
+      --start-child='xterm'
       --exit-with-children
       --daemon=no
       --pulseaudio=no
@@ -45,12 +46,17 @@ services:
     extends:
       file: samples/docker-compose.sample-rviz2-headless.yml
       service: rviz2_window_headless
+    container_name: rviz2_window_headless
     volumes:
       - x11:/tmp/.X11-unix:rw
     environment:
       - ROS_DOMAIN_ID=1
       - DISPLAY=:100
       - QT_X11_NO_MITSHM=1
+    depends_on:
+      rviz2xpra:
+        condition: service_started
+    command: 'bash -c "sleep 3 && rviz2"'
 
 
   marker_publisher:
